@@ -1,4 +1,4 @@
-import sys
+import random
 
 play_option = "Default"
 table = {    
@@ -17,7 +17,10 @@ def human():
     for turn in range(5):
         print(table)
         p1_choice = int(input("\nPlease enter a number from 1-9 to fill the table: "))
+        table_check(p1_choice)
         p2_choice = int(input("\nPlease enter a number from 1-9 to fill the table: "))
+        table_check(p2_choice)
+
 
     print("\n DRAWS! No one wins!")
     retry()
@@ -27,20 +30,24 @@ def bot():
     """
     Bot play option, execute tic tac toe for 1 players
     function called when user choose bot option
-    !!! Bot moves will be random
+    Bot moves will be random
     """
     pass
 
 
-def table_update(first, second, table = table):
+def table_check(turn: int) -> int:
     """
-    Update tic tac toe table, takes in 2 turn at once
-    Run first turn first, then second
+    Check tic tac toe turn, make sure no duplicate
     """
-    return table
+    available = [0,1,2,3,4,5,6,7,8]
+    if turn in available:
+        available.remove(turn)
+        return turn
+    else:
+        return None
 
 
-def win_check(table = table):
+def win_check(table = table) -> bool:
     """
     Check after every turn if a player has won
     """
@@ -55,9 +62,13 @@ def win_check(table = table):
 def retry():
     answer = input("Do you want to play again? y/n: ")
     if answer.lower() == "y" or answer.lower() == "yes":
+        game()
+    else:
+        print("You didnt enter y or yes, so the game will end. Thanks for playing!")
+        
 
 
-def game():
+def game(play_option):
     while play_option.lower() != "human" and play_option.lower() != "bot":     
         play_option = input("Not a viable options, please type 'human' or 'bot': ") 
     
@@ -66,4 +77,4 @@ def game():
     else:
         bot()
 
-game()
+game(play_option)
