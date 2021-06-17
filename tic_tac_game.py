@@ -1,11 +1,12 @@
 import random
 
 play_option = "Default"
-table = {    
+turn = [1,2,3,4,5,6,7,8]
+table = [    
         " ", " ", " ",     
         " ", " ", " ",    
         " ", " ", " ", 
-        }  
+        ]       
 
 
 def human():
@@ -13,13 +14,15 @@ def human():
     Human play option, execute tic tac toe for 2 players
     function called when user choose 2 players option
     """
-    # Total move it takes to complete the table in turn
-    for turn in range(5):
+    # while table still have available space, run until all boxes are filled
+    while turn:
         print(table)
         p1_choice = int(input("\nPlease enter a number from 1-9 to fill the table: "))
         table_check(p1_choice)
+        table[p1_choice] = "X"
         p2_choice = int(input("\nPlease enter a number from 1-9 to fill the table: "))
         table_check(p2_choice)
+        table[p2_choice] = "O"
 
 
     print("\n DRAWS! No one wins!")
@@ -43,7 +46,7 @@ def table_check(turn: int) -> int:
     if turn in available:
         available.remove(turn)
         return turn
-    else:
+    elif:
         return None
 
 
