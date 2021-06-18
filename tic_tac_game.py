@@ -46,7 +46,7 @@ def table_check(turn: int) -> int:
     if turn in available:
         available.remove(turn)
         return turn
-    elif:
+    else:
         return None
 
 
@@ -72,9 +72,9 @@ def retry():
 
 def display_board():
   print("\n")
-  print(board[0] + " | " + board[1] + " | " + board[2] + "     1 | 2 | 3")
-  print(board[3] + " | " + board[4] + " | " + board[5] + "     4 | 5 | 6")
-  print(board[6] + " | " + board[7] + " | " + board[8] + "     7 | 8 | 9")
+  print(table[0] + " | " + table[1] + " | " + table[2] + "     1 | 2 | 3")
+  print(table[3] + " | " + table[4] + " | " + table[5] + "     4 | 5 | 6")
+  print(table[6] + " | " + table[7] + " | " + table[8] + "     7 | 8 | 9")
   print("\n")
 
 
