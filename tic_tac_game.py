@@ -1,11 +1,11 @@
 import random
+import sys
 
-play_option = "Default"
 turn = [1,2,3,4,5,6,7,8]
 table = [    
-        " ", " ", " ",     
-        " ", " ", " ",    
-        " ", " ", " ", 
+        "-", "-", "-",     
+        "-", "-", "-",    
+        "-", "-", "-", 
         ]       
 
 
@@ -14,45 +14,38 @@ def human():
     Human play option, execute tic tac toe for 2 players
     function called when user choose 2 players option
     """
+    display_board()
     # while table still have available space, run until all boxes are filled
     while turn:
-        print(table)
-        p1_choice = int(input("\nPlease enter a number from 1-9 to fill the table: "))
-        table_check(p1_choice)
+        p1_choice = table_check()
         table[p1_choice] = "X"
-        p2_choice = int(input("\nPlease enter a number from 1-9 to fill the table: "))
-        table_check(p2_choice)
+        p2_choice = table_check()
         table[p2_choice] = "O"
-
-
-    print("\n DRAWS! No one wins!")
     retry()
 
 
-def bot():
+def table_check() -> int:
     """
-    Bot play option, execute tic tac toe for 1 players
-    function called when user choose bot option
-    Bot moves will be random
+    Check tic tac toe turn, make sure no duplicate or out of range input
     """
-    pass
-
-
-def table_check(turn: int) -> int:
-    """
-    Check tic tac toe turn, make sure no duplicate
-    """
+    # - 1 to fit it to the real index of 0-8
+    index = int(input("\nPlease enter a number from 1-9 to fill the table: ")) - 1
     available = [0,1,2,3,4,5,6,7,8]
-    if turn in available:
-        available.remove(turn)
-        return turn
-    else:
-        return None
+    if available == False:
+        win_check(False)
+        sys.exit()
+    while index not in available:
+        display_board()
+        print("Not available or out of range, please try again: ")
+        index = int(input("Enter a number from 1-9: ")) - 1
+    available.remove(index)
+    return index
 
 
-def win_check(table = table) -> bool:
+# turn_list to check for a draw, if passed and checked and avaiable moves are 0, return a draw
+def win_check(turn_list = True) -> bool:
     """
-    Check after every turn if a player has won
+    Check after every turn if a player has won, lost, or draw
     """
     # Combinations that would lead to a win
     win_list = [
@@ -61,13 +54,16 @@ def win_check(table = table) -> bool:
         [1,4,7], [2,5,8],
         [0,4,8], [6,4,2],
     ]
+    if turn_list == False:
+        print("DRAW!")
+        retry()
 
 def retry():
     answer = input("Do you want to play again? y/n: ")
     if answer.lower() == "y" or answer.lower() == "yes":
         game()
     else:
-        print("You didnt enter y or yes, so the game will end. Thanks for playing!")
+        print("You didnt enter 'y' or 'yes', so the game will end. Thanks for playing!")
 
 
 def display_board():
@@ -78,13 +74,13 @@ def display_board():
   print("\n")
 
 
-def game(play_option):
+def game(play_option = "Blank"):
     while play_option.lower() != "human" and play_option.lower() != "bot":     
-        play_option = input("Not a viable options, please type 'human' or 'bot': ") 
+        play_option = input("Not a viable option, please type 'human' or 'bot': ") 
     
     if play_option == "human":     
         human()
     else:
-        bot()
+        pass
 
-game(play_option)
+game()
