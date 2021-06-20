@@ -1,7 +1,7 @@
 import random
 import sys
 
-turn = [1,2,3,4,5,6,7,8]
+turn = "X"
 table = [    
         "-", "-", "-",     
         "-", "-", "-",    
@@ -19,8 +19,10 @@ def human():
     while turn:
         p1_choice = table_check()
         table[p1_choice] = "X"
+        display_board()
         p2_choice = table_check()
         table[p2_choice] = "O"
+        display_board()
     retry()
 
 
@@ -28,22 +30,30 @@ def table_check() -> int:
     """
     Check tic tac toe turn, make sure no duplicate or out of range input
     """
+
     # - 1 to fit it to the real index of 0-8
     index = int(input("\nPlease enter a number from 1-9 to fill the table: ")) - 1
-    available = [0,1,2,3,4,5,6,7,8]
-    if available == False:
-        win_check(False)
-        sys.exit()
-    while index not in available:
-        display_board()
-        print("Not available or out of range, please try again: ")
-        index = int(input("Enter a number from 1-9: ")) - 1
-    available.remove(index)
-    return index
 
+    if turn == False:
+        return None
+    else:
+        while index not in turn:
+            display_board()
+            print("Not available or out of range, please try again: ")
+            index = int(input("Enter a number from 1-9: ")) - 1
+    
+        turn.remove(index)
+        return index
 
-# turn_list to check for a draw, if passed and checked and avaiable moves are 0, return a draw
-def win_check(turn_list = True) -> bool:
+def current_turn():
+    global turn
+    if turn == "X":
+        turn = "O"
+    else:
+        turn = "X"
+
+        
+def win_check() -> bool:
     """
     Check after every turn if a player has won, lost, or draw
     """
@@ -54,9 +64,7 @@ def win_check(turn_list = True) -> bool:
         [1,4,7], [2,5,8],
         [0,4,8], [6,4,2],
     ]
-    if turn_list == False:
-        print("DRAW!")
-        retry()
+
 
 def retry():
     answer = input("Do you want to play again? y/n: ")
@@ -76,7 +84,7 @@ def display_board():
 
 def game(play_option = "Blank"):
     while play_option.lower() != "human" and play_option.lower() != "bot":     
-        play_option = input("Not a viable option, please type 'human' or 'bot': ") 
+        play_option = input("Please type 'human' or 'bot': ") 
     
     if play_option == "human":     
         human()
