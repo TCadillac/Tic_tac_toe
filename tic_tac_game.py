@@ -12,26 +12,28 @@ def human():
         "-", "-", "-",    
         "-", "-", "-", 
         ]
-    still_game = True
     turn = [0,1,2,3,4,5,6,7,8]
 
     # while table still have available space, run until all boxes are filled
-    while still_game == True:
-        still_game, move_index, turn = table_check(table, turn)
+    while len(turn) != 0:
+
+        move_index, turn = table_check(table, turn)
         table[move_index] = "X"
         display_board(table)
+        if len(turn) == 0:
+            break
 
         # Since while still_game can't check after the first turn, we'll need a manual check
-        still_game, move_index, turn = table_check(table, turn)
-        if still_game == True:
+        move_index, turn = table_check(table, turn)
+        if len(turn) != 0:
             table[move_index] = "0"
             display_board(table)
-
+    
     print("DRAW!")
     retry()
 
 
-def table_check(table: list, turn: list):
+def table_check(table: list, turn: list) -> (int, list):
     """
     Check tic tac toe turn, make sure no duplicate or out of range input
 
@@ -40,6 +42,10 @@ def table_check(table: list, turn: list):
 
     # - 1 to fit it to the real index of 0-8
     index = int(input("\nPlease enter a number from 1-9 to fill the table: ")) - 1
+    
+    # If there's no winner and the table has been filled:
+    if len(turn) == 0:
+        return None, []
 
     # If user enter invalid number or numbers that are already filled:
     while index not in turn:
@@ -48,10 +54,8 @@ def table_check(table: list, turn: list):
         index = int(input("Enter a number from 1-9: ")) - 1
 
     turn.remove(index)
-    # If there's no winner and the table has been filled:
-    if len(turn) == 0:
-        return False, None, None
-    return True, index, turn
+    # second check after removing
+    return index, turn
 
         
 def win_check() -> bool:
