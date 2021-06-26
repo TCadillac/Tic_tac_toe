@@ -5,7 +5,7 @@ import sys
 def human():
     """
     Human play option, execute tic tac toe for 2 players
-    function called when user choose 2 players option
+    function called after user type "human"
     """
     table = [    
         "-", "-", "-",     
@@ -13,13 +13,13 @@ def human():
         "-", "-", "-", 
         ]
     turn = [0,1,2,3,4,5,6,7,8]
-
     # while table still have available space, run until all boxes are filled
     while len(turn) != 0:
 
         move_index, turn = table_check(table, turn)
         table[move_index] = "X"
         display_board(table)
+        win_check(table)
 
         # "X" will be the one who finish the game, so after filling the X into the table
         # we need to check if it's the last turn, if yes than break
@@ -29,9 +29,23 @@ def human():
         move_index, turn = table_check(table, turn)
         table[move_index] = "0"
         display_board(table)
+        win_check(table)
     
     print("DRAW!")
     retry()
+
+
+def bot():
+    """
+    Bot play option, execute tic tac toe for 1 player
+    function called after user type "bot"
+    """
+    table = [    
+        "-", "-", "-",     
+        "-", "-", "-",    
+        "-", "-", "-", 
+        ]
+    turn = [0,1,2,3,4,5,6,7,8]
 
 
 def table_check(table: list, turn: list) -> (int, list):
@@ -41,11 +55,11 @@ def table_check(table: list, turn: list) -> (int, list):
     return index of the player's move and the list of the remaining spot yet to be chosen
     """
     display_board(table)
-
     # - 1 to fit it to the real index of 0-8
     index = int(input("\nPlease enter a number from 1-9 to fill the table: ")) - 1
     
     # If there's no winner and the table has been filled:
+    # check before remove() because the last move will be rendered False if we dont and not be entered onto the table
     if len(turn) == 0:
         # None is filler, to make sure it doesn't call argument error
         return None, turn
@@ -60,9 +74,9 @@ def table_check(table: list, turn: list) -> (int, list):
     return index, turn
 
         
-def win_check() -> bool:
+def win_check(table) -> bool:
     """
-    Check after every turn if a player has won, lost, or draw
+    Check after every turn if a player has won
     """
     # Combinations that would lead to a win
     win_list = [
