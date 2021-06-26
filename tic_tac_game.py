@@ -1,22 +1,34 @@
 import random
 import sys    
 
+
 def human():
     """
     Human play option, execute tic tac toe for 2 players
     function called when user choose 2 players option
     """
+    table = [    
+        "-", "-", "-",     
+        "-", "-", "-",    
+        "-", "-", "-", 
+        ]
     still_game = True
-    display_board()
+    display_board(table)
     # while table still have available space, run until all boxes are filled
     while still_game:
-        still_game = table_check("X")
-        still_game = table_check("O")
+        still_game, move_index = table_check("X", table)
+        table[move_index] = "X"
+        display_board(table)
+        # Since while still_game can't check after the first turn, we'll need a manual check
+        if still_game == True:
+            still_game, move_index = table_check("O", table)
+            table[move_index] = "0"
+            display_board(table)
     print("DRAW!")
     retry()
 
 
-def table_check(move) -> int:
+def table_check(move, table) -> int:
     """
     Check tic tac toe turn, make sure no duplicate or out of range input
     """
@@ -31,14 +43,12 @@ def table_check(move) -> int:
 
     # If user enter invalid number or numbers that are already filled:
     while index not in turn:
-        display_board()
+        display_board(table)
         print("Not available or out of range, please try again: ")
         index = int(input("Enter a number from 1-9: ")) - 1
 
-    table[index] = move
-    display_board(index, move)
     turn.remove(index)
-    return True
+    return True, index
 
         
 def win_check() -> bool:
@@ -62,12 +72,7 @@ def retry():
         print("You didnt enter 'y' or 'yes', so the game will end. Thanks for playing!")
 
 
-def display_board(index):
-    table = [    
-        "-", "-", "-",     
-        "-", "-", "-",    
-        "-", "-", "-", 
-        ]  
+def display_board(table):
     print("\n")
     print(table[0] + " | " + table[1] + " | " + table[2] + "     1 | 2 | 3")
     print(table[3] + " | " + table[4] + " | " + table[5] + "     4 | 5 | 6")
