@@ -20,14 +20,15 @@ def human():
         move_index, turn = table_check(table, turn)
         table[move_index] = "X"
         display_board(table)
+
+        # "X" will be the one who finish the game, so after filling the X into the table
+        # we need to check if it's the last turn, if yes than break
         if len(turn) == 0:
             break
 
-        # Since while still_game can't check after the first turn, we'll need a manual check
         move_index, turn = table_check(table, turn)
-        if len(turn) != 0:
-            table[move_index] = "0"
-            display_board(table)
+        table[move_index] = "0"
+        display_board(table)
     
     print("DRAW!")
     retry()
@@ -36,7 +37,8 @@ def human():
 def table_check(table: list, turn: list) -> (int, list):
     """
     Check tic tac toe turn, make sure no duplicate or out of range input
-
+    take in table to display_board() and turn to check it against the player's move to see if it's unavailable
+    return index of the player's move and the list of the remaining spot yet to be chosen
     """
     display_board(table)
 
@@ -45,7 +47,8 @@ def table_check(table: list, turn: list) -> (int, list):
     
     # If there's no winner and the table has been filled:
     if len(turn) == 0:
-        return None, []
+        # None is filler, to make sure it doesn't call argument error
+        return None, turn
 
     # If user enter invalid number or numbers that are already filled:
     while index not in turn:
@@ -54,7 +57,6 @@ def table_check(table: list, turn: list) -> (int, list):
         index = int(input("Enter a number from 1-9: ")) - 1
 
     turn.remove(index)
-    # second check after removing
     return index, turn
 
         
@@ -72,11 +74,24 @@ def win_check() -> bool:
 
 
 def retry():
-    answer = input("Do you want to play again? y/n: ")
-    if answer.lower() == "y" or answer.lower() == "yes":
-        game()
-    else:
-        print("You didnt enter 'y' or 'yes', so the game will end. Thanks for playing!")
+
+    for attempt in range(3):
+        answer = input("Do you want to play again? y/n: ")
+
+        if answer.lower() == "y" or answer.lower() == "yes":
+            game()
+
+        elif answer.lower() == "n" or answer.lower() == "no":
+            print("\nThanks for playing!!!")
+            # If the user choose to play again, the for loop will stay and stack over each other, so after a no answer, sys.exit()
+            sys.exit()
+
+        elif attempt < 2:
+            print(f"\nYou didn't enter the correct choices, please try again, you have {2-attempt} attempt(s) left.")
+
+    print("\nYou didnt enter 'y' or 'n', so the game will end. Thanks for playing!")
+    # sys.exit() to prevent stacking from for loop because the user might play multiple time and the remaining loop(s) will stay
+    sys.exit()
 
 
 def display_board(table: list):
@@ -94,6 +109,6 @@ def game(play_option = "Blank"):
     if play_option == "human":     
         human()
     else:
-        pass
+        bot()
 
 game()
