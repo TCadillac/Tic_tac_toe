@@ -1,6 +1,6 @@
 import random
 import sys    
-
+import time
 
 def human():
     """
@@ -15,23 +15,34 @@ def human():
     turn = [0,1,2,3,4,5,6,7,8]
     # while table still have available space, run until all boxes are filled
     while len(turn) != 0:
-
+        
+        # Player1's turn
         move_index, turn = table_check(table, turn)
         table[move_index] = "X"
         display_board(table)
         win_check(table)
 
+        # The game cannot be won unless 5 moves has been played, so when turn has been reduced to 4 moves or less, check win
+        # Check win before tie since last move might make it a win
+        if len(turn) <= 4:
+            win_check(table)
+
         # "X" will be the one who finish the game, so after filling the X into the table
         # we need to check if it's the last turn, if yes than break
         if len(turn) == 0:
             break
-
+        
+        # Player2's turn
         move_index, turn = table_check(table, turn)
         table[move_index] = "0"
         display_board(table)
         win_check(table)
+
+        # The game cannot be won unless 5 moves has been played, so when turn has been reduced to 4 moves or less, check win
+        if len(turn) <= 4:
+            win_check(table)
     
-    print("DRAW!")
+    print("\nDRAW!")
     retry()
 
 
@@ -47,6 +58,38 @@ def bot():
         ]
     turn = [0,1,2,3,4,5,6,7,8]
 
+    while len(turn) != 0:
+        
+        # Player1 turn
+        move_index, turn = table_check(table, turn)
+        table[move_index] = "X"
+        display_board(table)
+
+        # The game cannot be won unless 5 moves has been played, so when turn has been reduced to 4 moves or less, check win
+        # Check win before tie since last move might make it a win
+        if len(turn) <= 4:
+            win_check(table)
+
+        # "X" will be the one who finish the game, so after filling the X into the table
+        # We need to check if it's the last turn, if yes than break
+        if len(turn) == 0:
+            break
+        
+        # Bot's turn
+        move_index = random.choice(turn)
+        turn.remove(move_index)
+        table[move_index] = "O"
+        print("Bot is thinking....")
+        time.sleep(random.randint(1,4))
+
+        # The game cannot be won unless 5 moves has been played, so when turn has been reduced to 4 moves or less, check win
+        if len(turn) <= 4:
+            win_check(table)
+        
+
+    print("\nDRAW!")
+    retry()
+
 
 def table_check(table: list, turn: list) -> (int, list):
     """
@@ -54,6 +97,7 @@ def table_check(table: list, turn: list) -> (int, list):
     take in table to display_board() and turn to check it against the player's move to see if it's unavailable
     return index of the player's move and the list of the remaining spot yet to be chosen
     """
+
     display_board(table)
     # - 1 to fit it to the real index of 0-8
     index = int(input("\nPlease enter a number from 1-9 to fill the table: ")) - 1
@@ -66,9 +110,15 @@ def table_check(table: list, turn: list) -> (int, list):
 
     # If user enter invalid number or numbers that are already filled:
     while index not in turn:
-        display_board(table)
-        print("Not available or out of range, please try again: ")
-        index = int(input("Enter a number from 1-9: ")) - 1
+
+        if index > 8 or index < 0:
+            display_board(table)
+            print("Not a valid number, please try again: ")
+            index = int(input("Enter a number from 1-9: ")) - 1
+        else:
+            display_board(table)
+            print("Square already filled, please pick a different number: ")
+            index = int(input("Enter a number from 1-9: ")) - 1          
 
     turn.remove(index)
     return index, turn
@@ -96,14 +146,14 @@ def retry():
             game()
 
         elif answer.lower() == "n" or answer.lower() == "no":
-            print("\nThanks for playing!!!")
+            print("\nThanks for playing!!!\n")
             # If the user choose to play again, the for loop will stay and stack over each other, so after a no answer, sys.exit()
             sys.exit()
 
         elif attempt < 2:
             print(f"\nYou didn't enter the correct choices, please try again, you have {2-attempt} attempt(s) left.")
 
-    print("\nYou didnt enter 'y' or 'n', so the game will end. Thanks for playing!")
+    print("\nYou didnt enter 'y' or 'n', so the game will end. Thanks for playing!\n")
     # sys.exit() to prevent stacking from for loop because the user might play multiple time and the remaining loop(s) will stay
     sys.exit()
 
