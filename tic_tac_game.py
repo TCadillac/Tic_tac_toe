@@ -12,7 +12,9 @@ def human():
         "-", "-", "-",    
         "-", "-", "-", 
         ]
+    # Keep track of remaining moves, if empty, game is done
     turn = [0,1,2,3,4,5,6,7,8]
+
     # while table still have available space, run until all boxes are filled
     while len(turn) != 0:
         
@@ -20,12 +22,14 @@ def human():
         move_index, turn = table_check(table, turn)
         table[move_index] = "X"
         display_board(table)
-        win_check(table)
 
         # The game cannot be won unless 5 moves has been played, so when turn has been reduced to 4 moves or less, check win
         # Check win before tie since last move might make it a win
         if len(turn) <= 4:
-            win_check(table)
+            win_condition, player = win_check(table)
+            if win_condition == True:
+                print(f"\n{player} won!!\nThanks for playing!")
+                retry()
 
         # "X" will be the one who finish the game, so after filling the X into the table
         # we need to check if it's the last turn, if yes than break
@@ -36,11 +40,13 @@ def human():
         move_index, turn = table_check(table, turn)
         table[move_index] = "0"
         display_board(table)
-        win_check(table)
 
         # The game cannot be won unless 5 moves has been played, so when turn has been reduced to 4 moves or less, check win
         if len(turn) <= 4:
-            win_check(table)
+            win_condition, player = win_check(table)
+            if win_condition == True:
+                print(f"\n{player} won!!\nThanks for playing!")
+                retry()
     
     print("\nDRAW!")
     retry()
@@ -68,7 +74,10 @@ def bot():
         # The game cannot be won unless 5 moves has been played, so when turn has been reduced to 4 moves or less, check win
         # Check win before tie since last move might make it a win
         if len(turn) <= 4:
-            win_check(table)
+            win_condition, win = win_check(table)
+            if win_condition == True:
+                print(f"\nYou won!!!\nThanks for playing!")
+                retry()
 
         # "X" will be the one who finish the game, so after filling the X into the table
         # We need to check if it's the last turn, if yes than break
@@ -80,12 +89,16 @@ def bot():
         turn.remove(move_index)
         table[move_index] = "O"
         print("Bot is thinking....")
-        time.sleep(random.randint(1,4))
+        time.sleep(random.randint(1,2))
 
         # The game cannot be won unless 5 moves has been played, so when turn has been reduced to 4 moves or less, check win
         if len(turn) <= 4:
-            win_check(table)
-        
+            win_condition, win = win_check(table)
+            if win_condition == True:
+                display_board(table)
+                print(f"The bot won!!!\nThanks for playing!")
+                retry()
+
 
     print("\nDRAW!")
     retry()
@@ -124,7 +137,7 @@ def table_check(table: list, turn: list) -> (int, list):
     return index, turn
 
         
-def win_check(table) -> bool:
+def win_check(table: list) -> (bool, str):
     """
     Check after every turn if a player has won
     """
@@ -135,6 +148,15 @@ def win_check(table) -> bool:
         [1,4,7], [2,5,8],
         [0,4,8], [6,4,2],
     ]
+    for line in win_list:
+        # Check rows, columns, and diagonals
+        combination = set([table[line[0]], table[line[1]], table[line[2]]])
+
+        if len(combination) == 1 and combination != {"-"}:
+            #unpack comb (which is 1 item), which is either "X" or "O" to know who won
+            return True, *combination
+    else:
+        return False, None
 
 
 def retry():
@@ -166,7 +188,8 @@ def display_board(table: list):
     print("\n")
 
 
-def game(play_option = "Blank"):
+def game():
+    play_option = "Blank"
     while play_option.lower() != "human" and play_option.lower() != "bot":     
         play_option = input("Please type 'human' or 'bot': ") 
     
