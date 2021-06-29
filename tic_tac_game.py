@@ -12,6 +12,7 @@ def human():
         "-", "-", "-",    
         "-", "-", "-", 
         ]
+    choices = choice()
     # Keep track of remaining moves, if empty, game is done
     turn = [0,1,2,3,4,5,6,7,8]
 
@@ -20,7 +21,7 @@ def human():
         
         # Player1's turn
         move_index, turn = table_check(table, turn)
-        table[move_index] = "X"
+        table[move_index] = choices[0]
         display_board(table)
 
         # The game cannot be won unless 5 moves has been played, so when turn has been reduced to 4 moves or less, check win
@@ -28,7 +29,7 @@ def human():
         if len(turn) <= 4:
             win_condition, player = win_check(table)
             if win_condition == True:
-                print(f"\n{player} won!!\nThanks for playing!")
+                print(f"\nPlayer \"{player}\" won!!\nThanks for playing!")
                 retry()
 
         # "X" will be the one who finish the game, so after filling the X into the table
@@ -38,14 +39,14 @@ def human():
         
         # Player2's turn
         move_index, turn = table_check(table, turn)
-        table[move_index] = "0"
+        table[move_index] = choices[1]
         display_board(table)
 
         # The game cannot be won unless 5 moves has been played, so when turn has been reduced to 4 moves or less, check win
         if len(turn) <= 4:
             win_condition, player = win_check(table)
             if win_condition == True:
-                print(f"\n{player} won!!\nThanks for playing!")
+                print(f"\nPlayer \"{player}\" won!!\nThanks for playing!")
                 retry()
     
     print("\nDRAW!")
@@ -62,13 +63,14 @@ def bot():
         "-", "-", "-",    
         "-", "-", "-", 
         ]
+    choices = choice()
     turn = [0,1,2,3,4,5,6,7,8]
-
+    
     while len(turn) != 0:
         
         # Player1 turn
         move_index, turn = table_check(table, turn)
-        table[move_index] = "X"
+        table[move_index] = choices[0]
         display_board(table)
 
         # The game cannot be won unless 5 moves has been played, so when turn has been reduced to 4 moves or less, check win
@@ -87,7 +89,7 @@ def bot():
         # Bot's turn
         move_index = random.choice(turn)
         turn.remove(move_index)
-        table[move_index] = "O"
+        table[move_index] = choices[1]
         print("Bot is thinking....")
         time.sleep(random.randint(1,2))
 
@@ -178,6 +180,21 @@ def retry():
     print("\nYou didnt enter 'y' or 'n', so the game will end. Thanks for playing!\n")
     # sys.exit() to prevent stacking from for loop because the user might play multiple time and the remaining loop(s) will stay
     sys.exit()
+
+
+def choice() -> list:
+    """
+    Let player choose if they want "X" or "O"
+    """
+    p1 = input("Choose X or O for player1: ")
+
+    while p1 != "X" and p1 != "O":
+        p1 = input("Invalid, choose either \"X\" or \"O\": ")
+
+    if p1 == "X":
+        return [p1,"O"]
+    else:
+        return [p1, "X"]
 
 
 def display_board(table: list):
