@@ -116,12 +116,6 @@ def table_check(table: list, turn: list) -> (int, list):
     # - 1 to fit it to the real index of 0-8
     index = int(input("\nPlease enter a number from 1-9 to fill the table: ")) - 1
     
-    # If there's no winner and the table has been filled:
-    # check before remove() because the last move will be rendered False if we dont and not be entered onto the table
-    if len(turn) == 0:
-        # None is filler, to make sure it doesn't call argument error
-        return None, turn
-
     # If user enter invalid number or numbers that are already filled:
     while index not in turn:
 
@@ -190,8 +184,10 @@ def choice() -> list:
         p1 = input("Invalid, choose either \"X\" or \"O\": ")
 
     if p1 == "X":
+        # ["X", "O"]
         return [p1,"O"]
     else:
+        # ["O", "X"]
         return [p1, "X"]
 
 
@@ -213,4 +209,6 @@ def game():
     else:
         bot()
 
-game()
+
+if __name__ == "__main__":
+    game()
